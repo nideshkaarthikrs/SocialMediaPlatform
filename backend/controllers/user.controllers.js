@@ -67,7 +67,7 @@ export const loginUser = async (req, res) => {
             return res.status(401).json({message: "Invalid Credentials"})
         }
         // Generating JWT
-        const token = genToken(newUser._id)
+        const token = genToken(user._id)
         res.cookie("token", token, cookieOptions)
 
         res.status(201).json({
