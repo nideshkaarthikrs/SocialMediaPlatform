@@ -6,12 +6,12 @@ const isAuthenticated = async (req, res, next) => {
 
         const token = req.cookies.token // this gets parsed because we've used the cookie-parser middleware in index.js
         if (!token) {
-            res.status(404).json({message: "No Token Found"})
+            return res.status(401).json({message: "No Token Found"})
         }
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         const user = await User.findById(decoded.userId)
         if (!user) {
-            res.status(404).json({message: "User Not Found"})
+            return res.status(404).json({message: "User Not Found"})
         }
 
         req.user = user 
