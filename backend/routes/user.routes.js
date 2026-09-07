@@ -16,8 +16,8 @@ userRoutes.post('/login',loginUser)
 // JWT Verification route
 userRoutes.get('/me', isAuthenticated, getUser)
 
-userRoutes.post('/logout', logoutUser)
+userRoutes.post('/logout', isAuthenticated, logoutUser)
 
-userRoutes.get('/profile/:username', getUserProfile)
+userRoutes.get('/profile/:username', isAuthenticated, getUserProfile)
 
 export default userRoutes
