@@ -105,3 +105,82 @@ export const getUserProfile = async (req, res) => {
         res.status(500).json({message: "Internal Server Error"})
     }
 }
+
+export const followUser = async (req, res) => {
+    try {
+        const currentUserId = req.user._id.toString()
+        const targetUserId = req.params.id.toString()
+        const targetUser = await User.findById(targetUserId)
+
+        if (!targetUser) {
+            return res.status(404).json({
+                message: " Target user not found!"
+            })
+        }
+
+        // Check if the id is same as the logged in user
+             // ---> The user cannot follow themselves
+        if (currentUserId === targetUserId) {
+            return res.status(409).json({
+                message: "You cannot follow yourself!"
+            })
+        }
+
+        const alreadyFollowing = targetUser.followers.some((id) => {
+            return id.toString() === currentUserId
+        })
+        // Check if you are already following the user
+             // ---> There should be an option to unfollow
+        if (alreadyFollowing) {
+            return res.status(409).json({
+                message: "You are already following this user!"
+            })
+        }
+        await User.findByIdAndUpdate(currentUserId, {
+            $addToSet: { followings: targetUserId }
+        })
+        await User.findByIdAndUpdate(targetUserId, {
+            $addToSet: { followers: currentUserId }
+        })
+
+        return res.status(201).json({
+            message: "User Followed"
+        })
+    } catch (error) {
+        res.status(500).json({message: "Internal Server Error"})
+    }
+}
+
+export const unfollowUser = async (req, res) => {
+    try {
+        const currentUserId = req.user._id.toString()
+        const targetUserId = req.params.id.toString()
+
+        if (currentUserId === targetUserId) {
+            return res.status(409).json({
+                message: "You cannot unfollow yourself!"
+            })
+        }
+
+        const targetUser = await User.findById(targetUserId)
+
+        if (!targetUser) {
+            return res.status(404).json({
+                message: "Target user not found!"
+            })
+        }
+
+        await User.findByIdAndUpdate(currentUserId, {
+            $pull: { followings: targetUserId }
+        })
+        await User.findByIdAndUpdate(targetUserId, {
+            $pull: { followers: currentUserId }
+        })
+
+        return res.status(200).json({
+            message: "User Unfollowed"
+        })
+    } catch (error) {
+        res.status(500).json({message: "Internal Server Error"})
+    }
+}
