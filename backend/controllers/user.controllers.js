@@ -83,3 +83,25 @@ export const loginUser = async (req, res) => {
 export const getUser = (req, res) => {
     return res.status(200).json(req.user)
 }
+
+export const logoutUser = (req, res) => {
+    res.clearCookie("token", cookieOptions)
+    return res.status(200).json({ message: "Logout successful" })
+}
+
+export const getUserProfile = async (req, res) => {
+    try {
+        const { username } = req.params
+
+        const userData = await User.findOne({ username }).select("-password")
+
+        if (!userData) {
+            return res.status(404).json({message: "User not found"})
+        }
+
+        res.status(200).json({message: "User profile fetched successfully", user: userData})
+
+    } catch (error) {
+        res.status(500).json({message: "Internal Server Error"})
+    }
+}

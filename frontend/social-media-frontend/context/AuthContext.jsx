@@ -15,8 +15,19 @@ export const AuthProvider = ({children}) => {
             setLoader(false)
         })
     }, [])
+
+    const logout = async () => {
+        try {
+            await axiosInstance.post("/users/logout")
+        } catch {
+            // Clear local session even if the request fails
+        } finally {
+            setUser(null)
+        }
+    }
+
     return (
-        <AuthContext.Provider value={{user, setUser, loader, setLoader}}>
+        <AuthContext.Provider value={{user, setUser, loader, setLoader, logout}}>
             {children}
         </AuthContext.Provider>
     )

@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUser, loginUser, registerUser } from '../controllers/user.controllers.js';
+import { getUser, loginUser, logoutUser, registerUser, getUserProfile } from '../controllers/user.controllers.js';
 import dotenv from 'dotenv'
 import isAuthenticated from '../middlewares/authMiddleware.js';
 
@@ -16,6 +16,8 @@ userRoutes.post('/login',loginUser)
 // JWT Verification route
 userRoutes.get('/me', isAuthenticated, getUser)
 
+userRoutes.post('/logout', logoutUser)
 
+userRoutes.get('/profile/:username', getUserProfile)
 
 export default userRoutes

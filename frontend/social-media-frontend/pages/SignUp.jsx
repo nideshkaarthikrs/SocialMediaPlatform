@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import axiosInstance from '../axiosCalls/axios.js'
-import { useAuth } from '../context/authContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const SignUp = () => {
 
